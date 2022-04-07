@@ -17,6 +17,7 @@ const dbconnection = db.getConnection(function (err) {
     console.log("Error connecting to Db");
     return;
   }
+});
 
 app.use(cors());
 app.use(express.json());
@@ -80,5 +81,4 @@ app.delete("/delete/:id", (req, res) => {
 });
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-});
 });
