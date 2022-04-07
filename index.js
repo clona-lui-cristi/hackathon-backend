@@ -3,21 +3,7 @@ const app = express();
 const cors = require("cors");
 const PORT = process.env.PORT;
 const mysql = require("mysql");
-
-const db = mysql.createPool({
-  host: "remotemysql.com",
-  user: "H5vkxkG8qn",
-  password: "rkJ3cr2xNs",
-  database: "H5vkxkG8qn",
-  port: 3306,
-});
-
-const dbconnection = db.getConnection(function (err) {
-  if (err) {
-    console.log("Error connecting to Db");
-    return;
-  }
-});
+const dbconnection = require("./dbcon.js");
 
 app.use(cors());
 app.use(express.json());
