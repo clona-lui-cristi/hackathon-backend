@@ -4,7 +4,7 @@ const cors = require("cors");
 const PORT = process.env.PORT;
 const mysql = require("mysql");
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: "remotemysql.com",
   user: "H5vkxkG8qn",
   password: "rkJ3cr2xNs",
@@ -12,11 +12,17 @@ const db = mysql.createConnection({
   port: 3306,
 });
 
+const dbconnection = db.getConnection(function (err) {
+  if (err) {
+    console.log("Error connecting to Db");
+    return;
+  }
+
 app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  db.query("SELECT * FROM PSB", (err, results) => {
+  dbconnection.query("SELECT * FROM PSB", (err, results) => {
     if (err) {
       console.log(err);
       res.status(500).send("Error");
@@ -30,7 +36,7 @@ app.post("/create", (req, res) => {
   const longitude = req.body.longitude;
   const latitude = req.body.latitude;
 
-  db.query(
+  dbconnection.query(
     "INSERT INTO PSB (longitude, latitude) VALUES (?, ?)",
     [longitude, latitude],
     (err, results) => {
@@ -38,7 +44,7 @@ app.post("/create", (req, res) => {
         console.log(err);
         res.status(500).send("Error");
       } else {
-        db.query("SELECT * FROM PSB", (err, results) => {
+        dbconnection.query("SELECT * FROM PSB", (err, results) => {
           if (err) {
             console.log(err);
             res.status(500).send("Error");
@@ -53,7 +59,7 @@ app.post("/create", (req, res) => {
 
 app.delete("/delete", (req, res) => {
   const id = req.body.id;
-  db.query("DELETE FROM PSB WHERE id = ? ", id, (err, result) => {
+  dbconnection.query("DELETE FROM PSB WHERE id = ? ", id, (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -64,7 +70,7 @@ app.delete("/delete", (req, res) => {
 
 app.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
-  db.query("DELETE FROM PSB WHERE id = ?", id, (err, result) => {
+  dbconnection.query("DELETE FROM PSB WHERE id = ?", id, (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -74,4 +80,5 @@ app.delete("/delete/:id", (req, res) => {
 });
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
 });
