@@ -11,6 +11,8 @@ dbConnectionInfo = {
 };
 
 
+
+
 //create mysql connection pool
 var dbconnection = mysql.createPool(
   dbConnectionInfo
